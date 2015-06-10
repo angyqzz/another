@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>LibraryController</title>
+    <link rel="stylesheet" href="lib/b/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="lib/flatico/flaticon.css">
+</head>
+<body ng-controller="LibraryController">
+    <div class="overlay" ng-show="popupOpen"> </div>
+    <div class="navigate">
+        <div class="container-fluid">
+            <div class="image_holder text-center">
+                <img src="https://igcdn-photos-g-a.akamaihd.net/hphotos-ak-xfp1/t51.2885-15/11084725_1569837476626214_602265114_n.jpg" alt="..." class="img-circle" width="150px">
+            </div>
+            <div class="flex flex-align separator">
+                <div class="header">Main</div>
+            </div>
+            <div class="actions">
+                <button type="button" class="btn btn-default" ng-click="showPopup('addBook')">Add new Book</button>
+                <button type="button" class="btn btn-default" ng-click="showSettings('share')">Where books are?</button>
+                <button type="button" class="btn btn-default" ng-click="showSettings('coll')">Edit Collections</button>
+            </div>
+            <div class="flex flex-align separator">
+                <div class="header">Collection</div>
+                <div class="flex-right icon-button" ng-click="showInput()" ng-show="!showHiddenInput">+</span></div>
+                <div class="flex-right icon-button green" ng-click="showInput()" ng-show="showHiddenInput"><span class="icon flaticon-checkmark6" aria-hidden="true"></span></div>
+            </div>
+            <div class="hidden-input" ng-show="showHiddenInput"><input type="text" class="form-control" ng-model="collection_name"></div>
+            <div class="actions">
+                <button type="button" class="btn btn-default" ng-click="changeList(0)"><span class="flaticon-book82" aria-hidden="true"></span> All</button>
+                <button type="button" class="btn btn-default" ng-repeat="item in collection_list" ng-click="changeList(item.id)"><span class="{{item.icon}}" aria-hidden="true"></span> {{item.name}}</button>
+            </div>
+        </div>
+        <div class="stats"><strong>{{books_list.length}}</strong> books, <strong>{{collection_list.length}}</strong> collection. <strong>{{awayCount}}</strong> book is away.</div>
+    </div>
+    <div class="main-container">
+        <div class="container-fluid">
+           <h1>
+               Personal Library
+               <small ng-show="currentCollection.length == 0 && view == 1">All books listed</small>
+               <small ng-show="currentCollection.length == 0 && view == 2">Currenly away books</small>
+               <small ng-show="currentCollection.length > 0">{{currentCollection}}</small>
+           </h1>
+            Your current stats: <strong>{{books_list.length}}</strong> books<span ng-show="fullList">, <strong>{{collection_list.length}}</strong> collection. <strong>{{awayCount}}</strong> book is away.</span>
+            <div class="secondary-navigation flex flex-align">
+                <div class="alphabet">
+                    search will be here
+                </div>
+                <div class="flex-right">
+                    <button type="button" class="btn btn-default btn-sm" ng-class="{ active : !appereanceList }" ng-click="changeAppereance('pin')"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-class="{ active : appereanceList }" ng-click="changeAppereance('list')"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></button>
+                </div>
+            </div>
+
+            <div class="books">
+                <div class="flex">
+                    <div ng-repeat="book in books_list | orderBy:'title'" ng-class="{'col-xs-12 col-md-12' : appereanceList, 'col-xs-12 col-sm-6 col-md-2': !appereanceList}">
+                        <div class="book-thumb" ng-class="{away : book.away == 1}">
+                            <div class="image_thumb">
+                                <img src="img/{{book.image}}" alt="...">
+                                <div class="book-info {{item.color}}" ng-repeat="item in collection_list" ng-if="item.id == book.collection">
+                                    <span class="col_icon"><i class="icon {{item.icon}}"></i></span>
+                                    <div class="info_holder">
+                                        {{book.author}}<br>
+                                        {{book.title}}<br>
+                                        {{book.isbn}}<br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="caption">
+                                <blockquote>
+                                    <footer>by <strong>{{book.author}}</strong></footer>
+                                </blockquote>
+                            </div>
+                            <div class="text-right">
+                                <button class="btn btn-success btn-xs"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                                <button class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                <button class="btn btn-primary btn-xs" ng-show="book.away == 0"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="books" ng-show="view == 2">
+                <div class="row flex">
+                    <div ng-repeat="book in books_list | orderBy:'title'" ng-class="{'col-md-12' : appereanceList, 'col-md-2': !appereanceList}" ng-show="book.away == 1">
+                        <div class="thumbnail book-thumb" ng-class="{away : book.away == 1}">
+                            <img src="img/{{book.image}}" alt="...">
+                            <div class="caption">
+                                <h3>{{book.title}}</h3>
+                                <p>{{book.author}}</p>
+                                <p ng-repeat="item in collection_list" ng-if="item.id == book.collection"> {{item.name}}</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                                <button class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                <button class="btn btn-primary btn-sm" ng-show="book.away == 0"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side_popup" ng-class="{ 'opened--pop' : openSettings}">
+       <div class="container-fluid">
+           <div class="flex flex-align">
+               <ul class="pills">
+                   <li>Settings</li>
+                   <li role="presentation" ng-click="settingsTab = 1" ng-class="{active : settingsTab == 1}"><a href="#">Collections</a></li>
+                   <li role="presentation" ng-click="settingsTab = 2" ng-class="{active : settingsTab == 2}"><a href="#">Book Sharing</a></li>
+               </ul>
+               <div class="flex-right"><span class="icon flaticon-cross97 cancel" ng-click="openSettings = false"></span></div>
+           </div>
+
+           <!-- Collections -->
+
+           <div class="" ng-show="settingsTab == 1">
+               <h4>Collections</h4>
+               <p><em>rendered as italicized text</em></p>
+               <div class="list_element {{col.color}}" ng-repeat="col in collection_list"><span class="icon {{col.icon}}"></span> {{col.name}}</div>
+           </div>
+
+           <!-- Away -->
+
+           <div class="" ng-show="settingsTab == 2">
+               <h4>Sharing</h4>
+               <div class="row">
+                   <div class="col-md-4">
+                       <div class="panel panel-default">
+                           <div class="panel-heading">
+                               <h3 class="panel-title">Sharing Settings</h3>
+                           </div>
+                           <div class="panel-body">
+                               <form class="form-inline">
+                                   <div class="form-group">
+                                       <label for="exampleInputName2">Access Level</label>
+                                       <input type="text" class="form-control" id="exampleInputName2" placeholder="Set Level">
+                                   </div>
+                               </form>
+                           </div>
+                       </div>
+                       <div class="panel panel-danger">
+                           <div class="panel-heading">
+                               <h3 class="panel-title">Blacklist</h3>
+                           </div>
+                           <div class="panel-body">
+                               <ul class="list-group">
+                                   <li class="list-group-item">
+                                       <span class="badge">2</span>
+                                       Cras justo odio
+                                   </li>
+                               </ul>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="col-md-8">
+                       <table class="table">
+                           <thead class="thead_dark">
+                           <th>Book Title</th>
+                           <th>Book Author</th>
+                           <th>Who took</th>
+                           <th>Due</th>
+                           <th width="100px"></th>
+                           </thead>
+                           <tbody>
+                           <tr ng-repeat = 'read in readers_list'>
+                               <td></td>
+                               <td></td>
+                               <td>{{read.name}}</td>
+                               <td class="danger">{{read.due}}</td>
+                               <td><button class="btn btn-success btn-sm">Set returned</button></td>
+                           </tr>
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
+           </div>
+
+       </div>
+    </div>
+    <div class="popup" ng-show="openpopups['addBook']">
+        <div class="popup_container">
+            <div class="popup_close" ng-click="closePopup()"><span class="icon flaticon-cross97"></span></div>
+            <div class="popup_title">
+                Add New Book
+            </div>
+            <div class="popup_container" ng-init="tab = 1">
+                <ul class="nav nav-pills nav-stacked popup_tabs">
+                    <li role="presentation" ng-class="{active : tab == 1 }" ng-click="tab = 1"><a href="#"><span class="glyphicon glyphicon-barcode" aria-hidden="true"></span></a></li>
+                    <li role="presentation" ng-class="{active : tab == 2 }" ng-click="tab = 2"><a href="#"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></li>
+                </ul>
+                <div ng-show="tab == 1">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">ISBN</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> Open me again after saving
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-default">Search</button>
+                    </form>
+                </div>
+                <div ng-show="tab == 2">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Email address</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> Open me again after saving
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-default">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="js/controller.js"></script>
+</body>
+</html>

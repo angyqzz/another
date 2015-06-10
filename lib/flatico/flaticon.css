@@ -1,0 +1,58 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("flaticon.eot");
+	src: url("flaticon.eot#iefix") format("embedded-opentype"),
+	url("flaticon.woff") format("woff"),
+	url("flaticon.ttf") format("truetype"),
+	url("flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+	font-family: Flaticon;
+        font-size: 20px;
+font-style: normal;
+margin-left: 20px;
+}.flaticon-book82:before {
+	content: "\e000";
+}
+.flaticon-books30:before {
+	content: "\e001";
+}
+.flaticon-checkmark6:before {
+	content: "\e002";
+}
+.flaticon-code10:before {
+	content: "\e003";
+}
+.flaticon-comic1:before {
+	content: "\e004";
+}
+.flaticon-cross97:before {
+	content: "\e005";
+}
+.flaticon-magical1:before {
+	content: "\e006";
+}
+.flaticon-man432:before {
+	content: "\e007";
+}
+.flaticon-molecule12:before {
+	content: "\e008";
+}
+.flaticon-nodes1:before {
+	content: "\e009";
+}
+.flaticon-random5:before {
+	content: "\e00a";
+}
+.flaticon-sword8:before {
+	content: "\e00b";
+}
+.flaticon-tree-leaf2:before {
+	content: "\e00c";
+}
+.flaticon-user146:before {
+	content: "\e00d";
+}
